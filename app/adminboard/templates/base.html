@@ -1,0 +1,39 @@
+<!doctype html>
+<link rel="shortcut icon" href="{{url_for('static', filename='progeto.png')}}" />
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+    <div class="ui secondary pointing menu">
+
+      {% set navigation_bar = [ (url_for('adminboard.index'), 'Dashboard'), (url_for('adminboard.products'), 'Products'), (url_for('adminboard.orders'), 'Orders'), (url_for('adminboard.customers'), 'Customers'), (url_for('adminboard.homepage_setup'), 'Home
+      Page Setup') ] -%} {% for href, caption in navigation_bar %}
+      <a href="{{ href|e }}" {% if href==url_for(request.endpoint) %} class="ui item active" {% else %} class="ui item" {% endif%}>
+      {{ caption|e }}</a> {% endfor %}
+
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+  <div class="ui segment wide column">
+    {% block content %} {% endblock %}
+  </div>
+  <div id="footer" class="footer">
+    {% block footer %}
+    <img src="{{ url_for('static', filename='progeto.png') }}" class="ui avatar image"> Progeto &copy; 2018</a>. | Developed and Maintained by
+    <a href="http://dwebsoft.in">DWebSoft.in</a> {% endblock %}
+  </div>
+</body>
+</div>
+
+</html>

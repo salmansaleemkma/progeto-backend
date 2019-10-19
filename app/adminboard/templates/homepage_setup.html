@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block content %}
+
+{% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+<div class="ui message transition">
+  <p>{{ message }}</p>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="ui teal dividing header">
+  <div class="content">
+    <i class="clone outline icon"></i> Carousels
+    <div class="sub header">Slider Images</div>
+  </div>
+  {% if carouselCount < 4 %} <a href="{{url_for('adminboard.add_new_carousel')}}">
+    <div class="ui right floated primary button">
+      Add Slider
+      <i class="plus icon"></i>
+    </div>
+    </a>
+    {% endif %}
+</div>
+<div class="ui medium images">
+  {% for carousel in carousels %}
+  <a href="{{url_for('adminboard.view_or_update_carousel', file_name=carousel.file_name)}}">
+    <img class="ui image" style="border: solid 1px;" src="{{url_for('adminboard.get_carousel_image', file_name=carousel.file_name)+'?'+randomNumber}}">
+  </a>{% endfor %}
+</div>
+{% endblock %}

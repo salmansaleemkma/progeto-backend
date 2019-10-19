@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block content %} {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+<div class="ui message transition">
+  <p>{{ message }}</p>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="ui grid">
+  <div class="column row">
+    <div class="eight wide column">
+      <form class="ui form" action="{{url_for('adminboard.customers')}}" method="POST">
+        <div class="ui icon input">
+          <i class="search icon"></i>
+          <input type="text" placeholder="Search..." name="query">
+        </div>
+        <button class="ui teal button" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+<table class="ui large table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Contact Number</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for customer in customers %}
+    <tr>
+      <td>{{ customer.name }}</td>
+      <td>{{ customer.email }}</td>
+      <td>{{ customer.contact_number }}</td>
+      <td><a href="{{url_for('adminboard.get_customer', customer_id=customer.id)}}">View</a></td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+<!-- End Main Content -->
+{% endblock %}

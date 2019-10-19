@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+
+    <div class="ui secondary pointing menu">
+      <a href="{{url_for('adminboard.index')}}" class="ui item">Dashboard</a>
+      <a href="{{url_for('adminboard.products')}}" class="ui item">Products</a>
+      <a href="{{url_for('adminboard.orders')}}" class="ui item">Orders</a>
+      <a href="{{url_for('adminboard.customers')}}" class="ui item active">Customers</a>
+      <a href="{{url_for('adminboard.homepage_setup')}}" class="ui item">Home Page Setup</a>
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+  <div class="ui segment wide column">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="ui message transition">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <div class="ui grid">
+      <div class="eight column row">
+        <div class="fourteen wide column">
+
+          <h1 class="ui header">{{ customer.name }} ({{customer.email}})
+        {% if customer.confirmed%}
+        <a class="ui green label">Confirmed Account</a>
+        {%else%}
+        <a class="ui orange label">Account Not confirmed</a>
+        {%endif%}
+      </h1>
+        </div>
+      </div>
+
+      <div class="eight wide column">
+        <h4 class="ui grey header">Full Name</h4>
+      </div>
+      <div class="eight wide column">
+        {{ customer.name }}</div>
+      <div class="eight wide column">
+        <h4 class="ui grey header">Contact Number</h4>
+      </div>
+      <div class="eight wide column">
+        +{{ customer.contact_number }}
+      </div>
+
+      <div class="eight wide column">
+        <h4 class="ui grey header">Shipping Address</h4>
+      </div>
+      <div class="eight wide column">
+        {{ customer.shipping_address }}
+      </div>
+      <div class="eight wide column">
+        <h4 class="ui grey header">Billing Address</h4>
+      </div>
+      <div class="eight wide column">
+        {{ customer.billing_address }}
+      </div>
+
+    </div>
+
+    <h2 class="ui dividing header">Orders</h2>
+    <table class="ui large table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Total</th>
+          <th>Date and Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%if orders is not none %}
+        {%for order in orders %}
+        <tr>
+          <td>{{order.order_id}}</td>
+          <td>{{order.total}}</td>
+          <td>{{order.order_placed}}</td>
+          <td>{% if order.status == 'Order Placed'%}
+            <a class="ui large black label">
+        {% elif order.status == 'Processing'%}
+        <a class="ui large orange label">
+        {% elif order.status == 'Confirmed'%}
+        <a class="ui large teal label">
+        {% elif order.status == 'Shipped'%}
+        <a class="ui large yellow label">
+        {% elif order.status == 'Delivered'%}
+        <a class="ui large green label">
+        {% elif order.status == 'Canceled'%}
+        <a class="ui large red label">
+        {% elif order.status == 'Returned'%}
+        <a class="ui large grey label">
+        {% else %}
+        <a class="ui large label">
+        {%endif%}
+        {{ order.status }}</a></td>
+          <td><a href="{{url_for('adminboard.get_order', order_id=order.order_id)}}">View</a></td>
+        </tr>
+        {%endfor%}
+        {%endif%}
+      </tbody>
+    </table>
+  </div>
+
+
+  <div id="footer" class="footer">
+    {% block footer %}
+    <img src="{{ url_for('static', filename='progeto.png') }}" class="ui avatar image"> Progeto &copy; 2018</a>. | Developed and Maintained by
+    <a href="http://dwebsoft.in">DWebSoft.in</a> {% endblock %}
+  </div>
+</body>
+</div>
+
+</html>

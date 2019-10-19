@@ -1,0 +1,146 @@
+<!doctype html>
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+
+    <div class="ui secondary pointing menu">
+      <a href="{{url_for('adminboard.index')}}" class="ui item">Dashboard</a>
+      <a href="{{url_for('adminboard.products')}}" class="ui item active">Products</a>
+      <a href="{{url_for('adminboard.orders')}}" class="ui item">Orders</a>
+      <a href="{{url_for('adminboard.customers')}}" class="ui item">Customers</a>
+      <a href="{{url_for('adminboard.homepage_setup')}}" class="ui item">Home Page Setup</a>
+
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+  <div class="ui segment wide column" style="height: 500px;">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="ui message transition">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <div class="ui teal dividing header">
+
+      <div class="content">
+        {{file_name}}
+        <div class="sub header">Edit Product image</div>
+      </div>
+    </div>
+    <img class="ui large right floated image" style="border: solid 1px;" src="{{url_for('adminboard.product_image', product_code=product_code, file_name=file_name)+'?'+randomNumber}}">
+    <div class="ui grid">
+      <div class="ui fourteen wide column">
+        <form class="ui form" action="/progeto-admin/products/images/edit/{{product_code}}/{{file_name}}" method="POST" enctype="multipart/form-data" >
+          <h4 class="ui dividing header">Change Product Image</h4>
+          <div class="field">
+            <input type="file" name="file" required>
+          </div>
+          <button class="ui teal button" id="form-button" value="upload" type="submit">Update</button>
+          <a href="/progeto-admin/products/{{product_code}}" class="ui orange button">Cancel</a>
+
+          <a id="deleteModalBtn" class="ui right floated red button">Delete</a>
+
+        </form>
+        <div id="deleteModal" class="delete-modal">
+
+  <!-- Modal content -->
+  <div class="delete-modal-content">
+    <span class="close-delete-modal">&times;</span>
+    <h3>Are you sure you want to delete {{file_name}} ?</h3>
+    <button class="ui red button" id="form-button" value="upload" type="submit">Yes</button>
+    <button class="ui teal button close-delete-modal2">No</button>
+  </div>
+
+</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+<style>
+
+.delete-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 150px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.delete-modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  max-width: 550px;
+  height: auto;
+  text-align: center;
+}
+
+/* The Close Button */
+.close-delete-modal {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-delete-modal:hover,
+.close-delete-modal:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<script>
+// Get the modal
+var modal = document.getElementById('deleteModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("deleteModalBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close-delete-modal")[0];
+
+var noButton = document.getElementsByClassName("close-delete-modal2")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+noButton.onclick = function() {
+  modal.style.display = "none";
+}
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+</html>

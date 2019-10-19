@@ -1,0 +1,171 @@
+<!doctype html>
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+
+    <div class="ui secondary pointing menu">
+      <a href="{{url_for('adminboard.index')}}" class="ui item">Dashboard</a>
+      <a href="{{url_for('adminboard.products')}}" class="ui item active">Products</a>
+      <a href="{{url_for('adminboard.orders')}}" class="ui item">Orders</a>
+      <a href="{{url_for('adminboard.customers')}}" class="ui item">Customers</a>
+      <a href="{{url_for('adminboard.homepage_setup')}}" class="ui item">Home Page Setup</a>
+
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+  <div class="ui segment wide column">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="ui message transition">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <form class="ui form" action="{{url_for('adminboard.new_product')}}" method="POST" enctype=multipart/form-data> <h1 class="ui dividing header">Add New Product</h1>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Name</label>
+          <input type="text" name="name" placeholder="Product Title" required>
+        </div>
+        <div class="eight wide field">
+          <label>Description</label>
+          <input type="text" name="description" placeholder="Product Description" required>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Product Code</label>
+          <input type="text" name="product_code" placeholder="Product Code" required>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Category</label>
+          <select class="ui fluid search dropdown" name="category" required>
+            <option value="">Select Category</option>
+
+            {% for category in category_list %}
+            <option value="{{category}}">{{category}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="eight wide field">
+          <label>Units in Stock</label>
+          <input type="text" name="units" placeholder="Units" required>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Warranty</label>
+          <input type="number" name="warranty" placeholder="Warranty in Months" required>
+        </div>
+        <div class="eight wide field">
+          <label>Product Condition</label>
+          <select class="ui fluid search dropdown" name="condition" required>
+            <option value="">Select Condition</option>
+            {% for condition in condition_list %}
+            <option value="{{condition}}">{{condition}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Discount Percentage</label>
+          <input type="number" name="discount_percentage" placeholder="Discount">
+        </div>
+        <div class="eight wide field">
+          <label>Minimum Discounted Price</label>
+          <input type="number" name="minimum_discounted_price" placeholder="Minimum Discounted Price" required>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>MRP</label>
+          <input type="number" name="mrp" placeholder="MRP" required>
+        </div>
+        <div class="eight wide field">
+          <label>Unit Price</label>
+          <input type="text" name="price" placeholder="Price" required>
+        </div>
+      </div>
+
+      <h4 class="ui dividing header">Specifications</h4>
+
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Capacity</label>
+          <input type="text" name="capacity" placeholder="ex: 190L">
+        </div>
+        <div class="eight wide field">
+          <label>Dimensions</label>
+          <input type="text" name="dimensions" placeholder="Length x breadth x height inches" required>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Model</label>
+          <input type="text" name="model" placeholder="Model Name">
+        </div>
+        <div class="eight wide field">
+          <label>Sub Category</label>
+          <input type="text" name="sub_category" placeholder="Sub Category" required>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="eight wide field">
+          <label>Accessories</label>
+          <input type="text" name="accessories" placeholder="Inlet / Outlet Values etc...">
+        </div>
+        <div class="eight wide field">
+          <label>Brand</label>
+          <input type="text" name="brand" placeholder="ex: Samsung, LG etc..." required>
+        </div>
+      </div>
+
+      <h4 class="ui dividing header">Product Images</h4>
+      <div class="fields">
+        <div class="field">
+          <input type=file name=file1>
+        </div>
+        <div class="field">
+          <input type=file name=file2>
+        </div>
+        <div class="field">
+          <input type=file name=file3>
+        </div>
+        <div class="field">
+          <input type=file name=file4>
+        </div>
+        <div class="field">
+          <input type=file name=file5>
+        </div>
+      </div>
+
+
+      <button class="ui teal button" id="form-button" value="upload" type="submit">Submit</button>
+      <a href="{{url_for('adminboard.products')}}" class="ui red button">Cancel</a>
+    </form>
+  </div>
+
+  <div id="footer" class="footer">
+    {% block footer %}
+    <img src="{{ url_for('static', filename='progeto.png') }}" class="ui avatar image"> Progeto &copy; 2018</a>. | Developed and Maintained by
+    <a href="http://dwebsoft.in">DWebSoft.in</a> {% endblock %}
+  </div>
+</body>
+</div>
+
+</html>

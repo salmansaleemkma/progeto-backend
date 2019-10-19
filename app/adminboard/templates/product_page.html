@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+
+    <div class="ui secondary pointing menu">
+      <a href="{{url_for('adminboard.index')}}" class="ui item">Dashboard</a>
+      <a href="{{url_for('adminboard.products')}}" class="ui item active">Products</a>
+      <a href="{{url_for('adminboard.orders')}}" class="ui item">Orders</a>
+      <a href="{{url_for('adminboard.customers')}}" class="ui item">Customers</a>
+      <a href="{{url_for('adminboard.homepage_setup')}}" class="ui item">Home Page Setup</a>
+
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+  <div class="ui segment wide column">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="ui message transition">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <div class="ui grid">
+      <div class="eight column row">
+        <div class="fourteen wide column">
+
+          <img src="{{url_for('adminboard.product_image',product_code=product.code,file_name=product.images[0].image_name)+'?'+randomNumber}}" style="max-height: 500px; width: auto;" class="ui medium left floated image">
+          <h1 class="ui header">{{ product.name }}
+            {% if product.instock%}
+            <a class="ui green label">In Stock</a>
+            {%else%}
+            <a class="ui orange label">Not In Stock</a>
+            {%endif%}
+          </h1>
+          <p>{{ product.description}}</p>
+
+          <div class="ui tiny images">
+            {% for image in product.images %}
+            <div class="image-container">
+              <img class="ui image" src="{{url_for('adminboard.product_image', product_code=product.code, file_name=image.image_name)+'?'+randomNumber}}">
+              <div class="middle-content">
+                <div class="image-content-text"><a href="{{url_for('adminboard.edit_product_image',product_code=product.code, file_name=image.image_name)}}"><button class="ui teal button">Edit</button></a></div></div>
+            </div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="ui right floated column">
+          <a href="{{url_for('adminboard.edit_product',product_code=product.code)}}">
+            <button class="ui teal button">Edit</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="four wide column">
+        <h4 class="ui  header">Product Code</h4>
+      </div>
+      <div class="four wide column header">
+        {{ product.code }}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Condition</h4>
+      </div>
+      <div class="four wide column">
+        {{ product.condition }}
+      </div>
+
+      <div class="four wide column">
+        <h4 class="ui  header">Price</h4>
+      </div>
+      <div class="four wide column">
+        ₹ {{ product.price }}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">MRP</h4>
+      </div>
+      <div class="four wide column">
+        ₹ {{ product.mrp }}
+      </div>
+
+      <div class="four wide column">
+        <h4 class="ui  header">Discount</h4>
+      </div>
+      <div class="four wide column">
+        {{ product.discount_percentage}} % (Offer)</div>
+
+
+      <div class="four wide column">
+        <h4 class="ui  header">Minimum Discounted Price</h4>
+      </div>
+      <div class="four wide column">
+        ₹ {{ product.minimum_discounted_price }}</div>
+
+      <div class="four wide column">
+        <h4 class="ui  header">Units</h4>
+      </div>
+      <div class="four wide column">
+        {{ product.units }}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Category</h4>
+      </div>
+      <div class="four wide column">
+        {{ product.category }}
+      </div>
+
+
+      <div class="four wide column">
+        <h4 class="ui  header">Warranty</h4>
+      </div>
+      <div class="four wide column">
+        {{ product.warranty }} Months
+      </div>
+    </div>
+    <br>
+    <div class="ui header">
+      Specifications
+    </div>
+    <div class="ui divider"></div>
+    <div class="ui grid">
+      <div class="four wide column">
+        <h4 class="ui  header">Capacity</h4>
+      </div>
+      <div class="four wide column">
+        {{product.specifications.capacity}}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Dimensions</h4>
+      </div>
+      <div class="four wide column">
+        {{product.specifications.dimensions}}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Model</h4>
+      </div>
+      <div class="four wide column">
+        {{product.specifications.model}}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Sub Category</h4>
+      </div>
+      <div class="four wide column">
+        {{product.specifications.sub_category}}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Accessories</h4>
+      </div>
+      <div class="four wide column">
+        {{product.specifications.accessories}}
+      </div>
+      <div class="four wide column">
+        <h4 class="ui  header">Brand</h4>
+      </div>
+      <div class="four wide column">
+        {{product.specifications.brand}}
+      </div>
+    </div>
+  </div>
+
+  <div id="footer" class="footer">
+    {% block footer %}
+    <img src="{{ url_for('static', filename='progeto.png') }}" class="ui avatar image"> Progeto &copy; 2018</a>. | Developed and Maintained by
+    <a href="http://dwebsoft.in">DWebSoft.in</a> {% endblock %}
+  </div>
+</body>
+</div>
+<style media="screen">
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .product-image {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+  }
+
+  .middle-content {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .image-container:hover .product-image {
+    opacity: 0.7;
+  }
+
+  .image-container:hover .middle-content {
+    opacity: 1;
+  }
+  .image-content-text {
+  font-size: 16px;
+}
+</style>
+
+</html>

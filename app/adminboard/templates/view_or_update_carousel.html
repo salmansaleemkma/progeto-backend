@@ -1,0 +1,60 @@
+<!doctype html>
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+
+    <div class="ui secondary pointing menu">
+      <a href="{{url_for('adminboard.index')}}" class="ui item">Dashboard</a>
+      <a href="{{url_for('adminboard.products')}}" class="ui item">Products</a>
+      <a href="{{url_for('adminboard.orders')}}" class="ui item">Orders</a>
+      <a href="{{url_for('adminboard.customers')}}" class="ui item">Customers</a>
+      <a href="{{url_for('adminboard.homepage_setup')}}" class="ui item active">Home Page Setup</a>
+
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+  <div class="ui segment wide column" style="height: 500px;">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="ui message transition">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <div class="ui teal dividing header">
+
+      <div class="content">
+        {{carousel.file_name}}
+        <div class="sub header">Edit Carousel image</div>
+      </div>
+    </div>
+    <img class="ui large right floated image" style="border: solid 1px;" src="{{url_for('adminboard.get_carousel_image', file_name=carousel.file_name)+'?'+randomNumber}}">
+    <div class="ui grid">
+      <div class="ui eight wide column">
+        <form class="ui form" action="/progeto-admin/homepage/carousels/view/{{carousel.file_name}}" method="POST" enctype="multipart/form-data" >
+          <h4 class="ui dividing header">Change Carousel Image</h4>
+          <div class="field">
+            <input type="file" name="file" required>
+          </div>
+          <p>Recommend Image Size: 1200 x 450 px.</p>
+          <button class="ui teal button" id="form-button" value="upload" type="submit">Update</button>
+          <a href="/progeto-admin/setup/" class="ui red button">Cancel</a>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+
+</html>

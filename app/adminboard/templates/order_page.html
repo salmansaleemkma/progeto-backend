@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+
+<body class="ui container">
+
+  <head>
+    {% block head %}
+    <title>Progeto Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic-ui/semantic.min.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    <script src="{{ url_for('static', filename='semantic-ui/semantic.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='semantic-ui/components/modal.js')}}"></script>
+
+    <div class="ui mini basic modal">
+      <i class="close icon"></i>
+      <div class="header">
+        Order #: {{order.order_id}}
+      </div>
+      <div class="content">
+        <form method="POST">
+          <select class="ui fluid search dropdown" name="status" required>
+            <option value="{{order.status}}">{{order.status}}</option>
+          {% if order.status == 'Order Placed'%}
+            {% for status in  orderstates%}
+              {%if status != order.status%}
+                <option value="{{status}}">{{status}}</option>
+              {%endif%}
+            {% endfor %}
+
+          {% elif order.status == 'Processing' %}
+            <option value="Confirmed">Confirmed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Canceled">Canceled</option>
+            <option value="Returned">Returned</option>
+
+          {% elif order.status == 'Confirmed' %}
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Canceled">Canceled</option>
+            <option value="Returned">Returned</option>
+
+          {% elif order.status == 'Shipped'%}
+            <option value="Delivered">Delivered</option>
+            <option value="Returned">Returned</option>
+
+          {% elif order.status == 'Delivered'%}
+          <option value="Returned">Returned</option>
+          {%endif%}
+        </select>
+      </div>
+      <div class="actions">
+        <div class="ui black deny button">
+          Cancel
+        </div>
+        <button class="ui positive right labeled icon button" type="submit">
+          Update
+          <i class="checkmark icon"></i>
+        </button>
+      </div>
+      </form>
+    </div>
+
+    <div class="ui secondary pointing menu">
+      <a href="{{url_for('adminboard.index')}}" class="ui item">Dashboard</a>
+      <a href="{{url_for('adminboard.products')}}" class="ui item">Products</a>
+      <a href="{{url_for('adminboard.orders')}}" class="ui item active">Orders</a>
+      <a href="{{url_for('adminboard.customers')}}" class="ui item">Customers</a>
+      <a href="{{url_for('adminboard.homepage_setup')}}" class="ui item">Home Page Setup</a>
+
+      <div class="right menu">
+        <a class="ui item" href="{{ url_for('adminboard.logout')}}">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    {% endblock %}
+  </head>
+
+  <div class="ui segment wide column">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="ui message transition">
+      <p>{{ message }}</p>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <div class="ui grid">
+      <div class="eight column row">
+        <div class="fourteen wide column">
+
+          <h1 class="ui header">
+            Order ID: {{order.order_id}}
+          </h1>
+        </div>
+      </div>
+
+      <div class="two wide column">
+        <h4 class="ui grey header">Order Date:</h4>
+      </div>
+      <div class="six wide column">
+        {{order.order_placed.strftime('%H:%M %p %d-%m-%Y(%A)')}}
+      </div>
+
+      <div class="two wide column">
+        <h4 class="ui grey header">Status</h4>
+      </div>
+      <div class="six wide column header">
+        {% if order.status == 'Order Placed'%}
+        <a class="ui large black label">
+      {% elif order.status == 'Processing'%}
+      <a class="ui large orange label">
+      {% elif order.status == 'Confirmed'%}
+      <a class="ui large teal label">
+      {% elif order.status == 'Shipped'%}
+      <a class="ui large yellow label">
+      {% elif order.status == 'Delivered'%}
+      <a class="ui large green label">
+      {% elif order.status == 'Canceled'%}
+      <a class="ui large red label">
+      {% elif order.status == 'Returned'%}
+      <a class="ui large grey label">
+      {% else %}
+      <a class="ui large label">
+      {%endif%}
+      {{ order.status }}</a> {% if (order.status == 'Canceled') or (order.status == 'Returned') %}
+        <button class="small ui primary basic button" disabled onclick="$('.mini.modal').modal('show');">
+          Update Status
+        </button> {% else %}
+        <button class="small ui primary basic button" onclick="$('.mini.modal').modal('show');">
+          Update Status
+        </button> {% endif %}
+      </div>
+      <div class="two wide column">
+        <h4 class="ui grey header">Payment Mode</h4></div>
+      <div class="six wide column header">
+        {{ order.payment_mode }}
+      </div>
+
+      <div class="two wide column">
+        <h4 class="ui grey header">Transaction ID</h4>
+      </div>
+      <div class="six wide column">
+        {{order.transaction_id}}
+      </div>
+
+      <div class="two wide column">
+        <h4 class="ui grey header">Coupon Applied</h4>
+      </div>
+      <div class="six wide column">
+        {{order.coupon_applied}}
+      </div>
+
+      <div class="two wide column">
+        <h4 class="ui grey header">Total</h4>
+      </div>
+      <div class="six wide column header">
+        ₹ {{ order.total }}
+      </div>
+    </div>
+
+    <div class="ui one cards">
+      <div class="card">
+        <div class="content">
+          <div class="header">
+            Customer Details
+          </div>
+          <div class="description">
+            <div class="ui grid">
+              <div class="two wide column">
+                <h4 class="ui grey header">Full Name</h4>
+              </div>
+              <div class="six wide column">
+                {{ order.user.name }}</div>
+
+              <div class="two wide column">
+                <h4 class="ui grey header">Contact Number</h4>
+              </div>
+              <div class="six wide column">
+                +{{ order.user.contact_number }}
+              </div>
+
+              <div class="two wide column">
+                <h4 class="ui grey header">Shipping Address</h4>
+              </div>
+              <div class="six wide column">
+                {{ order.user.shipping_address }}
+              </div>
+              <div class="two wide column">
+                <h4 class="ui grey header">Billing Address</h4>
+              </div>
+              <div class="six wide column">
+                {{ order.user.billing_address }}
+              </div>
+
+              <div class="two wide column">
+                <h4 class="ui grey header">Email Address</h4>
+              </div>
+              <div class="thirteen wide column">
+                {{order.user.email}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="ui dividing header">Products</h2>
+
+    <div class="ui one cards">
+      {% for product in order.products %}
+      <div class="card">
+        <div class="content">
+          <div class="ui grid">
+            <div class="eight wide column">
+              <div class="ui tiny images">
+                {% for image in product.images %}
+                <img class="ui image" src="{{url_for('adminboard.product_image', product_code=product.code, file_name=image.image_name)}}"> {% endfor %}
+              </div>
+            </div>
+            <div class="eight wide column">
+              <div class="ui grey header">{{product.name}}</div>
+              <div class="meta">Product Code: {{product.code}}</div>
+              <p><span class="ui header">Description: </span>{{product.description}}</p>
+              <p><span class="ui header">Capacity: </span>{{product.size}}</p>
+            </div>
+          </div>
+          <div class="description">
+
+
+            <div class="ui grid">
+              <div class="eight wide column">
+                <div class="ui grid">
+                  <div class="four wide column">
+                    <h4 class="ui grey header">Product Type</h4>
+                  </div>
+                  <div class="four wide column">
+                    {{ product.product_type }}</div>
+
+                  <div class="four wide column">
+                    <h4 class="ui grey header">Condition</h4>
+                  </div>
+                  <div class="four wide column">
+                    {{ product.condition }}
+                  </div>
+
+                  <div class="four wide column">
+                    <h4 class="ui grey header">Warranty Expiry Date</h4>
+                  </div>
+                  <div class="four wide column">
+                    {{ product.warranty_expiry.strftime('%d-%m-%Y') }}
+                  </div>
+                  <div class="four wide column">
+                    <h4 class="ui grey header">Warranty Claims</h4>
+                  </div>
+                  <div class="four wide column">
+                    {{ product.warranty_claims }}
+                  </div>
+
+                  <div class="four wide column">
+                    <h4 class="ui grey header">Quantity</h4>
+                  </div>
+                  <div class="four wide column">
+                    {{product.quantity}}
+                  </div>
+
+                  <div class="four wide column">
+                    <h4 class="ui grey header">Price</h4>
+                  </div>
+                  <div class="four wide column">
+                    ₹ {{product.price}}
+                  </div>
+                </div>
+                <div class="eight wide column">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {%endfor%}
+    </div>
+  </div>
+  </div>
+
+  </div>
+  <div id="footer" class="footer">
+    {% block footer %}
+    <img src="{{ url_for('static', filename='progeto.png') }}" class="ui avatar image"> Progeto &copy; 2018</a>. | Developed and Maintained by
+    <a href="http://dwebsoft.in">DWebSoft.in</a> {% endblock %}
+  </div>
+</body>
+</div>
+
+</html>

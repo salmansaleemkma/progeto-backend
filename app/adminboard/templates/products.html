@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block content %} {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+<div class="ui message transition">
+  <p>{{ message }}</p>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="ui grid">
+  <div class="column row">
+    <div class="eight wide column">
+      <form class="ui form" action="{{url_for('adminboard.products')}}" method="POST">
+        <div class="ui icon input">
+          <i class="search icon"></i>
+          <input type="text" placeholder="Search..." name="query">
+        </div>
+        <button class="ui teal button" type="submit">Search</button>
+      </form>
+    </div>
+    <div class="ui right floated three wide column">
+      <a class="ui green button" href="{{url_for('adminboard.new_product')}}">
+        <i class="icon plus"></i>
+        New Product</a>
+    </div>
+  </div>
+</div>
+{% if products %}
+<table class="ui large table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Code</th>
+      <th>Category</th>
+      <th>Units</th>
+      <th>Price</th>
+      <th>Capacity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ product.name }}</td>
+      <td>{{ product.code }}</td>
+      <td>{{ product.category }}</td>
+      <td>{{ product.units }}</td>
+      <td>Rs.{{ product.price }}</td>
+      <td>{{ product.specifications['capacity']}}</td>
+      <td><a href="{{url_for('adminboard.get_product',product_code=product.code)}}">View</a></td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+
+    </tr>
+  </tfoot>
+</table>
+{% else %}
+<div class="ui message">
+  <div class="header">
+    Sorry. No Products to Show.
+  </div>
+</div>
+{% endif %}
+</div>
+<!-- End Main Content -->
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block content %} {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+<div class="ui message transition">
+  <p>{{ message }}</p>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="ui grid">
+  <div class="column row">
+    <div class="eight wide column">
+      <form class="ui form" action="{{url_for('adminboard.orders')}}" method="POST">
+        <div class="ui icon input">
+          <i class="search icon"></i>
+          <input type="text" placeholder="Search..." name="query">
+        </div>
+        <button class="ui teal button" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+<table class="ui large table">
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Total</th>
+      <th>Order Date</th>
+      <th>Order Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.order_id }}</td>
+      <td>{{ order.total }}</td>
+      <td>{{ order.order_placed.strftime('%H:%M %p %d-%m-%Y(%A)') }}</td>
+      <td>{{ order.status }}</td>
+      <td><a href="{{url_for('adminboard.get_order', order_id=order.order_id)}}">View</a></td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+<!-- End Main Content -->
+{% endblock %}
